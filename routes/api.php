@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SpecimenTypeControler;
 use App\Http\Controllers\Api\StudyController;
+use App\Http\Controllers\Api\StudyParticipantController;
 use App\Http\Controllers\Api\TestTypeController;
 
 use function Pest\Laravel\get;
@@ -36,6 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('specimen-types', SpecimenTypeControler::class);
     Route::apiResource('studies', StudyController::class, ['except' => ['destroy', 'update', 'store']]);
     Route::apiResource('specimens', \App\Http\Controllers\Api\SpecimenController::class);
+
+    Route::post('/participants/bulk', [StudyParticipantController::class, 'bulkStore']);
 
     // Admin only routes
     Route::middleware('admin')->group(function () {
