@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $this->call(SpecimenTypesTableSeeder::class);
         $this->call(StudiesTableSeeder::class);
+        $this->call(WorksheetTypeSeeder::class);
+        $this->call(StudyParticipantsTableSeeder::class);
     }
 }
