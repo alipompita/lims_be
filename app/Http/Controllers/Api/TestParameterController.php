@@ -40,7 +40,6 @@ class TestParameterController extends Controller
         ]);
 
 
-
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -49,20 +48,10 @@ class TestParameterController extends Controller
             ], 422);
         }
 
-
-        // return response()->json([
-        //     'success' => false,
-        //     'message' => 'Validation passed',
-        //     'validated' => $validator->validated(),
-        // ], 200);
-
-
         $testParameter = TestParameter::create([
             'test_type_id' => $request->test_type_id,
             'name' => $request->name,
             'description' => $request->description,
-            // 'type' => $request->type,
-
 
         ]);
         return response()->json([
