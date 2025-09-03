@@ -39,8 +39,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('specimens', \App\Http\Controllers\Api\SpecimenController::class);
 
     Route::post('/participants/bulk', [StudyParticipantController::class, 'bulkStore']);
-    Route::post('/specimens/bulk', [\App\Http\Controllers\Api\SpecimenController::class, 'bulkStore']);
-
 
     // Admin only routes
     Route::middleware('admin')->group(function () {
