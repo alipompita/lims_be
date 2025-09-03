@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(StudiesTableSeeder::class);
         $this->call(WorksheetTypeSeeder::class);
         $this->call(StudyParticipantsTableSeeder::class);
+        $this->call(SpecimensTableSeeder::class);
     }
 }

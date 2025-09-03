@@ -15,8 +15,18 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->char('worksheet_type', 1);
-            $table->foreignId('test_type_id')->constrained('test_types')->onDelete('cascade');
-            $table->foreign('worksheet_type')->references('type')->on('worksheet_types')->onDelete('cascade');
+
+            $table->unsignedBigInteger('test_type_id')->nullable();
+            $table->foreign('test_type_id')
+                ->references('id')
+                ->on('test_types')
+                ->onDelete('set null');
+
+            $table->foreign('worksheet_type')
+                ->references('type')
+                ->on('worksheet_types')
+                ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

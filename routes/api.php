@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('specimen-types', SpecimenTypeControler::class);
     Route::apiResource('studies', StudyController::class, ['except' => ['destroy', 'update', 'store']]);
     Route::apiResource('specimens', \App\Http\Controllers\Api\SpecimenController::class);
+    Route::apiResource('worksheets', \App\Http\Controllers\Api\WorksheetController::class);
 
     Route::post('/participants/bulk', [StudyParticipantController::class, 'bulkStore']);
 

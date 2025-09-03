@@ -13,10 +13,11 @@ class Worksheet extends Model
     protected $fillable = [
         'code',
         'worksheet_type',
+        'test_type_id',
     ];
 
     protected $casts = [
-        'worksheet_type' => 'char:1',
+        // 'worksheet_type' => 'char:1',
     ];
 
     public function samples()
@@ -43,7 +44,7 @@ class TestWorksheet extends Worksheet
     ];
 
     protected $casts = [
-        'worksheet_type' => 'char:1',
+        // 'worksheet_type' => 'char:1',
     ];
 
     public function samples()
