@@ -40,6 +40,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('worksheets', \App\Http\Controllers\Api\WorksheetController::class);
 
     Route::post('/participants/bulk', [StudyParticipantController::class, 'bulkStore']);
+    Route::get('/test-types/parameters', [\App\Http\Controllers\Api\TestParameterController::class, 'testTypeParameters']);
+    Route::post('/test-types/parameters', [\App\Http\Controllers\Api\TestParameterController::class, 'store']);
 
     // Admin only routes
     Route::middleware('admin')->group(function () {

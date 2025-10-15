@@ -12,6 +12,22 @@ class TestParameterController extends Controller
 {
     public function index()
     {
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Test parameters fetched successfully',
+        //     'timestamp' => now(),
+        //     // 'data' => TestParameter::with('testType')->get(),
+        // ]);
+
+        try {
+            $testParameters = TestParameter::with('testType')->get();
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching test parameters.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
         $testParameters = TestParameter::with('testType')->get();
         return response()->json($testParameters);
     }
@@ -48,17 +64,29 @@ class TestParameterController extends Controller
             ], 422);
         }
 
-        $testParameter = TestParameter::create([
-            'test_type_id' => $request->test_type_id,
-            'name' => $request->name,
-            'description' => $request->description,
+        try {
+            $testParameter = TestParameter::create([
+                'test_type_id' => $request->test_type_id,
+                'name' => strtolower($request->name),
+                'description' => $request->description,
+                'type' => $request->type,
+                'unit' => $request->unit,
+                'normal_range_min' => $request->normal_range_min,
+                'normal_range_max' => $request->normal_range_max,
 
-        ]);
-        return response()->json([
-            'success' => true,
-            'message' => 'Test parameter created successfully',
-            'data' => $testParameter,
-        ], 201);
+            ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Test parameter created successfully',
+                'data' => $testParameter,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while creating the test parameter',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function update(Request $request, $id)
@@ -83,5 +111,28 @@ class TestParameterController extends Controller
         $testParameter = TestParameter::findOrFail($id);
         $testParameter->delete();
         return response()->json(null, 204);
+    }
+
+    public function testTypeParameters(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'test_type_id' => 'required|exists:test_types,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $testTypeId = $request->input('test_type_id');
+        $parameters = TestParameter::where('test_type_id', $testTypeId)->get();
+        return response()->json([
+            'success' => true,
+            'data' => $parameters,
+        ]);
     }
 }

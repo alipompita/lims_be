@@ -20,8 +20,8 @@ class TestParameter extends Model
     ];
 
     protected $casts = [
-        'normal_range_min' => 'decimal:10,2',
-        'normal_range_max' => 'decimal:10,2',
+        'normal_range_min' => 'float',
+        'normal_range_max' => 'float',
     ];
 
     public function testType()

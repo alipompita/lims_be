@@ -11,8 +11,27 @@ class TestTypeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = TestType::select('id', 'label', 'name', 'description')
-            ->with('parameters:id,test_type_id,name,unit,normal_range_min,normal_range_max');
+
+
+
+        try {
+            $query = TestType::select('id', 'label', 'name', 'description')
+                ->with('parameters:id,test_type_id,name,unit,type,normal_range_min,normal_range_max');
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching test types.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Test types fetched successfully',
+        //     'timestamp' => now(),
+        //     'data' => $query,
+        // ]);
+
 
         // Search functionality
         if ($request->has('search')) {

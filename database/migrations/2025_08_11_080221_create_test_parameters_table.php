@@ -16,10 +16,13 @@ return new class extends Migration
             // $table->integer('test_type_id')->nullable();
             $table->foreignId('test_type_id')->constrained('test_types')->onDelete('cascade');
             $table->string('name');
+            $table->string('type')->nullable();
             $table->string('description')->nullable();
             $table->string('unit')->nullable();
-            $table->decimal('normal_range_min', 10, 2)->nullable();
-            $table->decimal('normal_range_max', 10, 2)->nullable();
+            // $table->float('normal_range_min')->nullable();
+            // $table->float('normal_range_max')->nullable();
+            $table->decimal('normal_range_min', 12, 11)->nullable();
+            $table->decimal('normal_range_max', 12, 11)->nullable();
             $table->timestamps();
         });
     }
