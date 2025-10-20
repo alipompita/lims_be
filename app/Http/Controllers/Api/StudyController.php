@@ -11,7 +11,7 @@ class StudyController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Study::select('id', 'code', 'title', 'description', 'is_active');
+        $query = Study::select('id', 'code', 'title', 'description', 'is_active')->with('testRequirements');
 
         // Filter by active status
         if ($request->has('active')) {
@@ -73,6 +73,35 @@ class StudyController extends Controller
             'success' => true,
             'data' => $study,
         ]);
+    }
+
+    public function addTestRequirement(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'study_id' => 'required|exists:studies,id',
+            'test_type' => 'required|numeric|max:100',
+            'specimen_type' => 'required|numeric|max:100',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $study = Study::find($request->study_id);
+        $requirement = $study->testRequirements()->create([
+            'test_type' => $request->test_type,
+            'specimen_type' => $request->specimen_type,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Test requirement added successfully',
+            'data' => $requirement,
+        ], 201);
     }
 
     public function update(Request $request, Study $study)

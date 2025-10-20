@@ -43,6 +43,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/test-types/parameters', [\App\Http\Controllers\Api\TestParameterController::class, 'testTypeParameters']);
     Route::post('/test-types/parameters', [\App\Http\Controllers\Api\TestParameterController::class, 'store']);
 
+    Route::post('/study-requrements', [\App\Http\Controllers\Api\StudyController::class, 'addTestRequirement']);
+
     // Admin only routes
     Route::middleware('admin')->group(function () {
         Route::apiResource('users', UserController::class);

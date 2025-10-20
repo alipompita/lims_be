@@ -30,4 +30,9 @@ class Study extends Model
     {
         return $this->hasMany(StudyParticipant::class, 'study_id');
     }
+
+    public function testRequirements()
+    {
+        return $this->hasMany(StudyTestRequirement::class, 'study_id');
+    }
 }
