@@ -38,12 +38,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('studies', StudyController::class, ['except' => ['destroy', 'update', 'store']]);
     Route::apiResource('specimens', \App\Http\Controllers\Api\SpecimenController::class);
     Route::apiResource('worksheets', \App\Http\Controllers\Api\WorksheetController::class);
+    Route::apiResource('sample-receipts', \App\Http\Controllers\Api\SampleReceptionController::class);
 
     Route::post('/participants/bulk', [StudyParticipantController::class, 'bulkStore']);
     Route::get('/test-types/parameters', [\App\Http\Controllers\Api\TestParameterController::class, 'testTypeParameters']);
     Route::post('/test-types/parameters', [\App\Http\Controllers\Api\TestParameterController::class, 'store']);
 
     Route::post('/study-requrements', [\App\Http\Controllers\Api\StudyController::class, 'addTestRequirement']);
+
 
     // Admin only routes
     Route::middleware('admin')->group(function () {
