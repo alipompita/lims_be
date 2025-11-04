@@ -41,6 +41,8 @@ class SampleReceptionController extends Controller
             'specno' => 'required|string|max:50|unique:sample_receipts,specno',
             'datecol' => 'required|date',
             'dateinlab' => 'required|date',
+            'rejected' => 'boolean',
+            'resrej' => 'required_if:rejected,1|string|max:255',
             // 'entry_by' => 'nullable|exists:users,id',
         ]);
 
@@ -49,7 +51,7 @@ class SampleReceptionController extends Controller
                 'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors(),
-            ], 422);
+            ], 201);
         }
 
         $sample_receipt = SampleReceipt::create([
@@ -60,7 +62,9 @@ class SampleReceptionController extends Controller
             'specno' => $request->specno,
             'datecol' => $request->datecol,
             'dateinlab' => $request->dateinlab,
-            'entry_by' => $request->entry_by,
+            'rejected' => $request->rejected ?? false,
+            'resrej' => $request->resrej ?? null,
+            // 'entry_by' => $request->entry_by,
         ]);
 
         return response()->json([
