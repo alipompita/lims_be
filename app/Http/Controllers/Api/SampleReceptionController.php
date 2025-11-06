@@ -15,11 +15,14 @@ class SampleReceptionController extends Controller
 
         // Filter by rejection status
         if ($request->has('rejected')) {
-            $isRejected = $request->boolean('rejected');
-            if ($isRejected) {
-                $query->rejected();
-            } else {
-                $query->notRejected();
+            //    ignore if value is not boolean
+            if (in_array($request->input('rejected'), ['0', '1', 0, 1, true, false, 'true', 'false'], true)) {
+                $isRejected = $request->boolean('rejected');
+                if ($isRejected) {
+                    $query->rejected();
+                } else {
+                    $query->notRejected();
+                }
             }
         }
 
