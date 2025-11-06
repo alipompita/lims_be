@@ -23,6 +23,19 @@ class SampleReceptionController extends Controller
             }
         }
 
+        //filter by period
+        if ($request->has('period')) {
+            $period = $request->input('period');
+            if ($period == 'today') {
+                $query->whereDate('created_at', now()->toDateString());
+            } elseif ($period == 'this_week') {
+                $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+            } elseif ($period == 'this_month') {
+                $query->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year);
+            }
+        }
+
         $sampleReceipts = $query->orderBy('id', 'asc')->get();
 
         return response()->json([
