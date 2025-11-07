@@ -68,5 +68,11 @@ class SampleReceipt extends Model
                 $model->entry_by = auth('sanctum')->id();
             }
         });
+
+        static::updating(function ($model) {
+            if (auth('sanctum')->check()) {
+                $model->entry_by = auth('sanctum')->id();
+            }
+        });
     }
 }

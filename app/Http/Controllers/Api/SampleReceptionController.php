@@ -47,6 +47,63 @@ class SampleReceptionController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $sample_receipt = SampleReceipt::with(['study', 'specimenType', 'entryBy'])->find($id);
+
+        if (!$sample_receipt) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sample receipt not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $sample_receipt,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $sample_receipt = SampleReceipt::find($id);
+
+        if (!$sample_receipt) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sample receipt not found',
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'study_id' => 'sometimes|required|exists:studies,id',
+            'basefol' => 'sometimes|nullable|string|max:50',
+            'stid' => 'sometimes|nullable|string|max:50',
+            'spectype' => 'sometimes|required|exists:specimen_types,id',
+            'specno' => 'sometimes|required|string|max:50|unique:sample_receipts,specno,' . $sample_receipt->id,
+            'datecol' => 'sometimes|required|date',
+            'dateinlab' => 'sometimes|required|date',
+            'rejected' => 'sometimes|boolean',
+            'resrej' => 'sometimes|required_if:rejected,1|string|max:255',
+            // 'entry_by' => 'sometimes|nullable|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 201);
+        }
+
+        $sample_receipt->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'data' => $sample_receipt,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
