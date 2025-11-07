@@ -19,6 +19,7 @@ class SampleReceipt extends Model
         'entry_by',
         'rejected',
         'resrej',
+        'updated_by',
     ];
 
     protected $casts = [
@@ -40,6 +41,11 @@ class SampleReceipt extends Model
     public function entryBy()
     {
         return $this->belongsTo(User::class, 'entry_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     public function scopeRejected($query)
@@ -71,7 +77,7 @@ class SampleReceipt extends Model
 
         static::updating(function ($model) {
             if (auth('sanctum')->check()) {
-                $model->entry_by = auth('sanctum')->id();
+                $model->updated_by = auth('sanctum')->id();
             }
         });
     }
