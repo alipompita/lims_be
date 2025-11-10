@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SampleReceipt;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class SampleReceptionController extends Controller
 {
@@ -144,5 +145,45 @@ class SampleReceptionController extends Controller
             'success' => true,
             'data' => $sample_receipt,
         ], 201);
+    }
+
+    public function indexReport(Request $request)
+    {
+
+
+        // generate report using custom sql query
+        $sql = "SELECT
+                    st.id as spectype_code,
+                    st.label as spectype,
+                    count(*) as samples_collected,
+                    sum(case when r.rejected = true then 1 else 0 end) as samples_rejected,
+                    sum(case when r.rejected = false or r.rejected is null then 1 else 0 end) as samples_accepted
+                from sample_receipts r
+                left join specimen_types st on st.id = r.spectype
+                group by st.id, st.label
+                order by st.id, st.label;";
+        $report = DB::select($sql);
+
+        return response()->json([
+            'success' => true,
+            'data' => $report,
+        ]);
+    }
+
+    public function study_sample_report(Request $request)
+    {
+        $sql = "SELECT s.code as study, r.basefol,count(*) as samples_collected,
+                    sum(case when r.rejected = true then 1 else 0 end) as samples_rejected,
+                    sum(case when r.rejected = false or r.rejected is null then 1 else 0 end) as samples_accepted
+                from sample_receipts r
+                left join studies s on s.id = r.study_id
+                group by s.code, r.basefol
+                order by s.code, r.basefol;";
+        $report = DB::select($sql);
+
+        return response()->json([
+            'success' => true,
+            'data' => $report,
+        ]);
     }
 }
