@@ -132,7 +132,7 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'current_password' => 'required',
-            'new_password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         if ($validator->fails()) {
@@ -140,7 +140,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Validation failed',
                 'errors' => $validator->errors(),
-            ], 422);
+            ], 201);
         }
 
         if (!Hash::check($request->current_password, $user->password)) {
@@ -151,7 +151,7 @@ class AuthController extends Controller
         }
 
         $user->update([
-            'password' => Hash::make($request->new_password),
+            'password' => Hash::make($request->password),
         ]);
 
         $user->tokens()->delete(); // Revoke all previous tokens
