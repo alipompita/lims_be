@@ -33,6 +33,11 @@ class SampleReceipt extends Model
         return $this->belongsTo(Study::class);
     }
 
+    public function specimenDetails()
+    {
+        return $this->belongsTo(Specimen::class, 'specno', 'specno');
+    }
+
     public function specimenType()
     {
         return $this->belongsTo(SpecimenType::class, 'spectype');

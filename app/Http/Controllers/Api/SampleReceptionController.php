@@ -12,7 +12,7 @@ class SampleReceptionController extends Controller
 {
     public function index(Request $request)
     {
-        $query = SampleReceipt::with(['study', 'specimenType', 'entryBy', 'updatedBy']);
+        $query = SampleReceipt::with(['study', 'specimenType', 'specimenDetails', 'entryBy', 'updatedBy']);
 
         // Filter by rejection status
         if ($request->has('rejected')) {
