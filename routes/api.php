@@ -49,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // sample receipt report
     Route::get('/reports/sample-receipts', [\App\Http\Controllers\Api\SampleReceptionController::class, 'indexReport']);
     Route::get('/reports/sample-receipts/study', [\App\Http\Controllers\Api\SampleReceptionController::class, 'study_sample_report']);
+    Route::get('/reports', [\App\Http\Controllers\Api\ReportsController::class, 'index']);
 
 
     // Admin only routes
