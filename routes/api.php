@@ -58,6 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('studies-admin', StudyController::class);
         Route::apiResource('test-types', TestTypeController::class);
         Route::apiResource('test-parameters', \App\Http\Controllers\Api\TestParameterController::class);
+        Route::apiResource('study-acc-forms', \App\Http\Controllers\Api\StudyAccFormContoller::class);
+        Route::apiResource('sample-collection-requirements', \App\Http\Controllers\Api\SampleCollectionRequirementsController::class);
     });
 });
 
