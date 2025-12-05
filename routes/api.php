@@ -44,12 +44,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/test-types/parameters', [\App\Http\Controllers\Api\TestParameterController::class, 'testTypeParameters']);
     Route::post('/test-types/parameters', [\App\Http\Controllers\Api\TestParameterController::class, 'store']);
 
-    Route::post('/study-requrements', [\App\Http\Controllers\Api\StudyController::class, 'addTestRequirement']);
+    // Route::post('/study-requirements', [\App\Http\Controllers\Api\StudyController::class, 'addTestRequirement']);
+    // Route::get('/study-requirements', [\App\Http\Controllers\Api\StudyController::class, 'addTestRequirement']);
 
     // sample receipt report
     Route::get('/reports/sample-receipts', [\App\Http\Controllers\Api\SampleReceptionController::class, 'indexReport']);
     Route::get('/reports/sample-receipts/study', [\App\Http\Controllers\Api\SampleReceptionController::class, 'study_sample_report']);
     Route::get('/reports', [\App\Http\Controllers\Api\ReportsController::class, 'index']);
+    Route::get('/study-collection-requirements', [\App\Http\Controllers\Api\StudyController::class, 'getStudyCollectionRequirements']);
 
 
     // Admin only routes
@@ -60,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('test-parameters', \App\Http\Controllers\Api\TestParameterController::class);
         Route::apiResource('study-acc-forms', \App\Http\Controllers\Api\StudyAccFormContoller::class);
         Route::apiResource('sample-collection-requirements', \App\Http\Controllers\Api\SampleCollectionRequirementsController::class);
+        Route::apiResource('test-requirements', App\Http\Controllers\Api\TestRequirementsController::class);
     });
 });
 

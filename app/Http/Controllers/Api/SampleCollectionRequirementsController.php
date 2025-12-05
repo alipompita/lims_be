@@ -55,6 +55,22 @@ class SampleCollectionRequirementsController extends Controller
         ], 201);
     }
 
+    public function destroy($id)
+    {
+        $requirement = SampleCollectionRequirement::find($id);
+        if (!$requirement) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sample Collection Requirement not found',
+            ], 404);
+        }
+        $requirement->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Sample Collection Requirement deleted successfully',
+        ]);
+    }
+
     public function show($id)
     {
         $requirement = SampleCollectionRequirement::find($id);

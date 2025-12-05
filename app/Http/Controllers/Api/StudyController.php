@@ -36,6 +36,15 @@ class StudyController extends Controller
         ]);
     }
 
+    public function getStudyCollectionRequirements()
+    {
+        $studies = Study::with('accForms')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $studies,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

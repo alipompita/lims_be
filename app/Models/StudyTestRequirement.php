@@ -16,4 +16,9 @@ class StudyTestRequirement extends Model
     {
         return $this->belongsTo(Study::class, 'study_id');
     }
+
+    public function spectype()
+    {
+        return $this->belongsTo(SpecimenType::class, 'id');
+    }
 }

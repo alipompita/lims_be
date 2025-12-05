@@ -35,4 +35,10 @@ class Study extends Model
     {
         return $this->hasMany(StudyTestRequirement::class, 'study_id');
     }
+
+    public function accForms()
+    {
+
+        return $this->hasMany(StudyAccForm::class, 'study_id')->with('sampleCollectionRequirements');
+    }
 }
