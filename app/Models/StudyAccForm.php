@@ -23,7 +23,8 @@ class StudyAccForm extends Model
 
     public function sampleCollectionRequirements()
     {
-        return $this->hasMany(SampleCollectionRequirement::class, 'study_acc_form_id');
+        return $this->hasMany(SampleCollectionRequirement::class, 'study_acc_form_id')
+            ->with('specimenType');
     }
 
     public function study()

@@ -25,6 +25,11 @@ class SampleCollectionRequirement extends Model
         return $this->belongsTo(StudyAccForm::class, 'study_acc_form_id');
     }
 
+    public function specimenType()
+    {
+        return $this->belongsTo(\App\Models\SpecimenType::class, 'spectype');
+    }
+
     public function study()
     {
         return $this->hasOneThrough(
