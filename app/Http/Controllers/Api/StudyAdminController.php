@@ -7,11 +7,11 @@ use App\Models\Study;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
-class StudyController extends Controller
+class StudyAdminController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Study::select('id', 'code', 'title', 'description', 'is_active')->with('testRequirements');
+        $query = Study::select('id', 'code', 'title', 'description', 'is_active');
 
         // Filter by active status
         if ($request->has('active')) {
@@ -76,8 +76,15 @@ class StudyController extends Controller
         ], 201);
     }
 
-    public function show(Study $study)
+    public function show($id)
     {
+        $study = Study::query()->findOrFail($id);
+        if (! $study) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Study not found',
+            ], 404);
+        }
         return response()->json([
             'success' => true,
             'data' => $study,
@@ -113,8 +120,10 @@ class StudyController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, Study $study)
+    public function update(Request $request, string $id)
     {
+        $study = Study::query()->findOrFail($id);
+
 
         if (! $study) {
             return response()->json([

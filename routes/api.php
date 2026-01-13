@@ -54,12 +54,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/study-collection-requirements', [\App\Http\Controllers\Api\StudyController::class, 'getStudyCollectionRequirements']);
 
 
+
     // Admin only routes
     Route::middleware('admin')->group(function () {
-        Route::apiResource('users', UserController::class);
-        Route::apiResource('studies-admin', StudyController::class);
-        Route::apiResource('test-types', TestTypeController::class);
-        Route::apiResource('test-parameters', \App\Http\Controllers\Api\TestParameterController::class);
+        Route::apiResource('studies-admin', \App\Http\Controllers\Api\StudyAdminController::class);
+
+        // Route::apiResource('users', UserController::class);
+        // Route::apiResource('studies-admin', \App\Http\Controllers\Api\StudyAdminController::class);
         Route::apiResource('study-acc-forms', \App\Http\Controllers\Api\StudyAccFormContoller::class);
         Route::apiResource('sample-collection-requirements', \App\Http\Controllers\Api\SampleCollectionRequirementsController::class);
         Route::apiResource('test-requirements', App\Http\Controllers\Api\TestRequirementsController::class);
