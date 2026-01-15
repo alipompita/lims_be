@@ -60,6 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::apiResource('studies-admin', \App\Http\Controllers\Api\StudyAdminController::class);
         Route::apiResource('test-types', App\Http\Controllers\Api\TestTypeController::class);
+        Route::apiResource('storage-requirements', App\Http\Controllers\Api\StorageRequirementsController::class);
         // Route::apiResource('users', UserController::class);
         // Route::apiResource('studies-admin', \App\Http\Controllers\Api\StudyAdminController::class);
         Route::apiResource('study-acc-forms', \App\Http\Controllers\Api\StudyAccFormContoller::class);
