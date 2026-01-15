@@ -76,6 +76,16 @@ class StudyController extends Controller
         ], 201);
     }
 
+    public function studyForms(Study $study)
+    {
+        $forms = $study->accForms;
+
+        return response()->json([
+            'success' => true,
+            'data' => $forms,
+        ]);
+    }
+
     public function show(Study $study)
     {
         return response()->json([
