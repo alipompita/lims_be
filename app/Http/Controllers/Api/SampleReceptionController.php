@@ -172,11 +172,12 @@ class SampleReceptionController extends Controller
 
     public function study_sample_report(Request $request)
     {
-        $sql = "SELECT s.code as study, r.basefol,count(*) as samples_collected,
+        $sql = "SELECT s.code as study, af.form_name as basefol, count(*) as samples_collected,
                     sum(case when r.rejected = true then 1 else 0 end) as samples_rejected,
                     sum(case when r.rejected = false or r.rejected is null then 1 else 0 end) as samples_accepted
                 from sample_receipts r
                 left join studies s on s.id = r.study_id
+                left join study_acc_forms af on af.id = r.basefol
                 group by s.code, r.basefol
                 order by s.code, r.basefol;";
         $report = DB::select($sql);
