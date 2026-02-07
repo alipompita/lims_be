@@ -9,6 +9,8 @@ use App\Models\Study;
 use App\Models\StudyParticipant;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+
 use Exception;
 
 class SpecimenController extends Controller
@@ -159,6 +161,24 @@ class SpecimenController extends Controller
             ],
             'failed_rows' => $errors,
         ], 200);
+    }
+
+    public function testConnection()
+    {
+        try {
+            // Simple query to test database connection
+            DB::connection()->getPdo();
+            return response()->json([
+                'success' => true,
+                'message' => 'Database connection is working',
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Database connection failed',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function show(Specimen $spec)
