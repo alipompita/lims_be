@@ -53,6 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reports', [\App\Http\Controllers\Api\ReportsController::class, 'index']);
     Route::get('/study-collection-requirements', [\App\Http\Controllers\Api\StudyController::class, 'getStudyCollectionRequirements']);
     Route::get('/studies/{study}/forms', [\App\Http\Controllers\Api\StudyController::class, 'studyForms']);
+    Route::post('/specimen/load/', [\App\Http\Controllers\Api\SpecimenController::class, 'loadSpecimen']);
     // Route::get('/test-types', [TestTypeController::class, 'index']);
 
 

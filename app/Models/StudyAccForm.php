@@ -12,6 +12,7 @@ class StudyAccForm extends Model
 
     protected $fillable = [
         'study_id',
+        'code',
         'form_name',
         'form_description',
         'is_followup',

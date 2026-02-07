@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Specimen;
+use App\Models\Study;
+use App\Models\StudyParticipant;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Exception;
@@ -172,5 +174,105 @@ class SpecimenController extends Controller
                 'error' => $e->getMessage(),
             ] . 404);
         }
+    }
+
+    public function LoadSpecimen(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'STID' => 'required|string|max:7|min:7',
+            'SPECNO' => 'required|string|max:7|min:7|unique:specimens,specno',
+            'LABNO' => 'required|string|max:7|min:6|unique:specimens,labno',
+            'SPECTYPE' => 'required|exists:specimen_types,id',
+            'DATECOLL' => 'required|date',
+            'ACCFORM' => 'required|string|max:64',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // check if study participant exists
+        $participant = \App\Models\StudyParticipant::where('stid', $request->STID)->first();
+
+        if (!$participant) {
+            $accForm = \App\Models\StudyAccForm::where('code', $request->ACCFORM)->first();
+            if (!$accForm) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Could not determine study for this participant using provided accForm code: ' . $request->ACCFORM,
+                ], 404);
+            }
+
+            try {
+                $participant = \App\Models\StudyParticipant::create([
+                    'stid' => $request->STID,
+                    'study_id' => $accForm->study_id,
+                    'initials' => $request->PARTICIPANTINITIALS ?? null,
+                    'sex' => $request->SEX ?? null,
+                    'dob' => $request->DOB_YEAR . '-' . $request->DOB_MONTH . '-' . $request->DOB_DAY ?? null,
+                ]);
+            } catch (Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error creating study participant: ' . $e->getMessage(),
+                ], 500);
+            }
+        }
+
+        try {
+            $specimen = Specimen::create([
+                'labno' => $request->LABNO,
+                'stid' => $participant->id,
+                'specno' => $request->SPECNO,
+                'spectype' => $request->SPECTYPE,
+                'cno' => $request->CNO ?? null,
+                'accForm' => $request->ACCFORM ?? null,
+                'repeat_sample' => $request->RPTSAMPLE ?? null,
+                'pregnant' => $request->PREG ?? null,
+                'curmens' => $request->CURMENS ?? null,
+                'mens2d' => $request->MENS2D ?? null,
+                'basefoll' => $request->BASEFOLL ?? null,
+                'fast' => $request->FAST ?? null,
+                'venepunc' => $request->VENE ?? null,
+                'volume' => $request->VOL ?? null,
+                'tubes' => $request->TUBENUM ?? null,
+                'stooltype' => $request->STOOLTYPE ?? null,
+                'stoolusual' => $request->STOOLUSUAL ?? null,
+                // 'spectime' => $request->SPECTIME ?? null,
+                'datecol' => $request->DATECOLL ?? null,
+                'timeprod' => $request->TIMEPROD ?? null,
+                'timeint' => $request->TIMEINT ?? null,
+                'iohexol' => $request->IOHEX ?? null,
+                'dateinlab' => $request->DATEINLAB ?? null,
+                'timeinlab' => $request->TIMEINLAB ?? null,
+                'staffcode' => $request->STAFFCODE ?? null,
+                // 'labstaff' => $request->LABSTAFF ?? null,
+                // 'checker' => $request->CHECKER ?? null,
+                'rcdr' => $request->RCDR ?? null,
+                'version' => $request->VERSION ?? null,
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating specimen: ' . $e->getMessage(),
+            ], 500);
+        }
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Specimen Added Successfully',
+            'specimen_details' => [
+                'labno' => $specimen->labno,
+                'specno' => $specimen->specno,
+                'stid' => $participant->stid,
+                'accForm' => $specimen->accForm,
+                'spectype' => $specimen->spectype
+            ]
+        ], 200);
     }
 }
