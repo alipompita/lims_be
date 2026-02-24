@@ -156,6 +156,20 @@ class SampleReceptionController extends Controller
 
 
         // generate report using custom sql query
+        $whereClauses = [];
+
+        if ($request->has('start_date')) {
+            $start = $request->input('start_date');
+            $whereClauses[] = "r.created_at >= '$start'";
+        }
+        if ($request->has('end_date')) {
+            $end = $request->input('end_date');
+            $whereClauses[] = "r.created_at <= '$end'";
+        }
+        if ($request->has('study')) {
+            $study = $request->input('study');
+            $whereClauses[] = "r.study_id = '$study'";
+        }
         $sql = "SELECT
                     st.id as spectype_code,
                     st.label as spectype,
@@ -164,25 +178,55 @@ class SampleReceptionController extends Controller
                     sum(case when r.rejected = false or r.rejected is null then 1 else 0 end) as samples_accepted
                 from sample_receipts r
                 left join specimen_types st on st.id = r.spectype
-                group by st.id, st.label
+                ";
+
+        if (count($whereClauses) > 0) {
+            $sql .= "where " . implode(" and ", $whereClauses) . " ";
+        }
+
+        $sql .= "group by st.id, st.label
                 order by st.id, st.label;";
+
+
         $report = DB::select($sql);
 
         return response()->json([
             'success' => true,
+            'sql' => $sql,
             'data' => $report,
         ]);
     }
 
     public function study_sample_report(Request $request)
     {
+
+        $whereClauses = [];
+        if ($request->has('start_date')) {
+            $start = $request->input('start_date');
+            $whereClauses[] = "r.created_at >= '$start'";
+        }
+        if ($request->has('end_date')) {
+            $end = $request->input('end_date');
+            $whereClauses[] = "r.created_at <= '$end'";
+        }
+        if ($request->has('study')) {
+            $study = $request->input('study');
+            $whereClauses[] = "r.study_id = '$study'";
+        }
+
         $sql = "SELECT s.code as study, af.form_name as basefol, count(*) as samples_collected,
                     sum(case when r.rejected = true then 1 else 0 end) as samples_rejected,
                     sum(case when r.rejected = false or r.rejected is null then 1 else 0 end) as samples_accepted
                 from sample_receipts r
                 left join studies s on s.id = r.study_id
-                left join study_acc_forms af on af.id = r.basefol
-                group by s.code, r.basefol
+                left join study_acc_forms af on af.id = r.basefol 
+              ";
+
+        if (count($whereClauses) > 0) {
+            $sql .= "where " . implode(" and ", $whereClauses) . " ";
+        }
+
+        $sql .= " group by s.code, r.basefol
                 order by s.code, r.basefol;";
         $report = DB::select($sql);
 
