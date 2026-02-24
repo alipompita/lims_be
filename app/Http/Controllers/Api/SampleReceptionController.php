@@ -38,6 +38,10 @@ class SampleReceptionController extends Controller
                 $query->whereMonth('created_at', now()->month)
                     ->whereYear('created_at', now()->year);
             }
+        } else if ($request->has('start') & $request->has('end')) {
+            $start = $request->input('start');
+            $end = $request->input('end');
+            $query->whereBetween('created_at', [$start, $end]);
         }
 
         $sampleReceipts = $query->orderBy('id', 'asc')->get();
