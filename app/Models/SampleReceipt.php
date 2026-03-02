@@ -20,6 +20,7 @@ class SampleReceipt extends Model
         'rejected',
         'resrej',
         'updated_by',
+        'site_id',
     ];
 
     protected $casts = [

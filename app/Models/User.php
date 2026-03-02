@@ -19,6 +19,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'default_site_id',
         'first_name',
         'last_name',
         'username',
@@ -60,6 +61,11 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    public function defaultSite()
+    {
+        return $this->belongsTo(Site::class, 'default_site_id');
     }
 
     public function isLabTech(): bool
