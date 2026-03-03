@@ -64,6 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/specimen/test-connection/', [\App\Http\Controllers\Api\SpecimenController::class, 'testConnection']);
     Route::get('/sites', [\App\Http\Controllers\Api\SiteController::class, 'index']);
     Route::get('/sites/{id}', [\App\Http\Controllers\Api\SiteController::class, 'show']);
+    Route::get('/study-acc-forms-all', [\App\Http\Controllers\Api\StudyAccFormContoller::class, 'index']);
 
 
     // Route::get('/test-types', [TestTypeController::class, 'index']);
