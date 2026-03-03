@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SampleReceipt;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
@@ -12,6 +13,16 @@ class SampleReceptionController extends Controller
 {
     public function index(Request $request)
     {
+
+        $user = User::find(auth('sanctum')->user());
+
+        $user_default_site = $user->get('default_site_id');
+        $selected_site = null;
+
+        if ($user->get('role') != 'admin') {
+            $selected_site = $user_default_site;
+        }
+
         $query = SampleReceipt::with(['study', 'specimenType', 'specimenDetails', 'entryBy', 'updatedBy', 'accForm']);
 
         // Filter by rejection status
@@ -49,6 +60,7 @@ class SampleReceptionController extends Controller
         return response()->json([
             'success' => true,
             'data' => $sampleReceipts,
+            'requesting_user' => $user,
         ]);
     }
 
