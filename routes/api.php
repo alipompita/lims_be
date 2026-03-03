@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reports/sample-receipts', [\App\Http\Controllers\Api\SampleReceptionController::class, 'indexReport']);
     Route::get('/reports/sample-receipts/study', [\App\Http\Controllers\Api\SampleReceptionController::class, 'study_sample_report']);
     Route::get('/reports', [\App\Http\Controllers\Api\ReportsController::class, 'index']);
+
     Route::get('/study-collection-requirements', [\App\Http\Controllers\Api\StudyController::class, 'getStudyCollectionRequirements']);
     Route::get('/studies/{study}/forms', [\App\Http\Controllers\Api\StudyController::class, 'studyForms']);
     Route::post('/specimen/load/', [\App\Http\Controllers\Api\SpecimenController::class, 'loadSpecimen']);
