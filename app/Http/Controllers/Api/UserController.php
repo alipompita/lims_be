@@ -22,15 +22,25 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:admin,lab_tech',
+            'role' => 'required|in:admin,lab_tech,data_officer',
+            'site_id' => 'nullable|exists:sites,id',
             'is_active' => 'boolean',
         ]);
+
+        if ($request->role != 'admin') {
+            $validator->after(function ($validator) use ($request) {
+                if (!$request->site_id) {
+                    $validator->errors()->add('site_id', 'The site_id field is required for non admin users.');
+                }
+            });
+        }
 
         if ($validator->fails()) {
             return response()->json([
@@ -47,6 +57,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'default_site_id' => $request->site_id ?? null,
             'is_active' => $request->is_active ?? true,
         ]);
 
@@ -73,7 +84,7 @@ class UserController extends Controller
             'username' => 'sometimes|required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
             'password' => 'sometimes|required|string|min:8|confirmed',
-            'role' => 'sometimes|required|in:admin,lab_tech',
+            'role' => 'sometimes|required|in:admin,lab_tech,data_officer',
             'is_active' => 'boolean',
         ]);
 

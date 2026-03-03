@@ -87,10 +87,12 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
+        $user = User::with('defaultSite')->find($request->user()->id);
+
         return response()->json([
             'success' => true,
             'data' => [
-                'user' => $request->user(),
+                'user' => $user,
             ],
         ]);
     }

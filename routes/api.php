@@ -62,6 +62,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/studies/{study}/forms', [\App\Http\Controllers\Api\StudyController::class, 'studyForms']);
     Route::post('/specimen/load/', [\App\Http\Controllers\Api\SpecimenController::class, 'loadSpecimen']);
     Route::get('/specimen/test-connection/', [\App\Http\Controllers\Api\SpecimenController::class, 'testConnection']);
+    Route::get('/sites', [\App\Http\Controllers\Api\SiteController::class, 'index']);
+    Route::get('/sites/{id}', [\App\Http\Controllers\Api\SiteController::class, 'show']);
+
 
     // Route::get('/test-types', [TestTypeController::class, 'index']);
 
@@ -71,7 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('studies-admin', \App\Http\Controllers\Api\StudyAdminController::class);
         Route::apiResource('test-types', App\Http\Controllers\Api\TestTypeController::class);
         Route::apiResource('storage-requirements', App\Http\Controllers\Api\StorageRequirementsController::class);
-        // Route::apiResource('users', UserController::class);
+        Route::apiResource('users', UserController::class);
         // Route::apiResource('studies-admin', \App\Http\Controllers\Api\StudyAdminController::class);
         Route::apiResource('study-acc-forms', \App\Http\Controllers\Api\StudyAccFormContoller::class);
         Route::apiResource('sample-collection-requirements', \App\Http\Controllers\Api\SampleCollectionRequirementsController::class);
