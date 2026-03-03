@@ -12,9 +12,7 @@ class SampleReceptionController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
-        $user_default_site = $user->default_site_id;
-        $selected_site = $user_default_site;
+
 
         $query = SampleReceipt::with(['study', 'specimenType', 'specimenDetails', 'entryBy', 'updatedBy', 'accForm']);
         // Filter by rejection status
@@ -31,7 +29,10 @@ class SampleReceptionController extends Controller
         }
         $isAdmin = null;
         // filter site
-        if ($user->get('role') != 'admin') {
+        $user = $request->user();
+        $user_default_site = $user->default_site_id;
+        $selected_site = $user_default_site;
+        if ($user->role != 'admin') {
             $isAdmin = false;
             $selected_site = $user_default_site;
             $query->where('site_id', $selected_site);
@@ -40,6 +41,7 @@ class SampleReceptionController extends Controller
             $selected_site = $request->input('site_id');
             $query->where('site_id', $selected_site);
         }
+
         //filter by period
         if ($request->has('period')) {
             $period = $request->input('period');
