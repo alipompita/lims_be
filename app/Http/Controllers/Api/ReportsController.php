@@ -27,11 +27,7 @@ class ReportsController extends Controller
                 'errors' => $validator->errors(),
             ], 201);
         }
-
         // generate report using custom sql query
-
-
-
         $sql = "SELECT
                     count(*) as samples_collected,
                     sum(case when r.rejected = true then 1 else 0 end) as samples_rejected,
@@ -43,6 +39,25 @@ class ReportsController extends Controller
 
         if ($request->has('start_date') && $request->has('end_date')) {
             $where_clause .= " WHERE r.dateinlab BETWEEN '{$request->start_date}' AND '{$request->end_date}'";
+        }
+
+        // filter sites
+        $user = $request->user();
+        $user_default_site = $user->default_site_id;
+        if ($user->role != 'admin') {
+            if (strlen($where_clause) > 0) {
+                $where_clause .= " AND";
+            } else {
+                $where_clause .= " WHERE";
+            }
+            $where_clause .= " r.site_id = {$user_default_site}";
+        } else if ($request->has('site_id')) {
+            if (strlen($where_clause) > 0) {
+                $where_clause .= " AND";
+            } else {
+                $where_clause .= " WHERE";
+            }
+            $where_clause .= " r.site_id = {$request->site_id}";
         }
 
         if ($request->has('study')) {

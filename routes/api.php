@@ -73,6 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin only routes
     Route::middleware('admin')->group(function () {
+        Route::apiResource('admin/sites', \App\Http\Controllers\Api\SiteController::class);
         Route::apiResource('studies-admin', \App\Http\Controllers\Api\StudyAdminController::class);
         Route::apiResource('test-types', App\Http\Controllers\Api\TestTypeController::class);
         Route::apiResource('storage-requirements', App\Http\Controllers\Api\StorageRequirementsController::class);

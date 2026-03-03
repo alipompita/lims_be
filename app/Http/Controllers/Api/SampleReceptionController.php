@@ -192,6 +192,16 @@ class SampleReceptionController extends Controller
             $study = $request->input('study');
             $whereClauses[] = "r.study_id = '$study'";
         }
+        // add site filter
+        $user = $request->user();
+        $user_default_site = $user->default_site_id;
+        if ($user->role != 'admin') {
+            $whereClauses[] = "r.site_id = '$user_default_site'";
+        } else if ($request->has('site_id')) {
+            $site_id = $request->input('site_id');
+            $whereClauses[] = "r.site_id = '$site_id'";
+        }
+
         $sql = "SELECT
                     st.id as spectype_code,
                     st.label as spectype,
@@ -205,10 +215,8 @@ class SampleReceptionController extends Controller
         if (count($whereClauses) > 0) {
             $sql .= "where " . implode(" and ", $whereClauses) . " ";
         }
-
         $sql .= "group by st.id, st.label
                 order by st.id, st.label;";
-
 
         $report = DB::select($sql);
 
@@ -235,6 +243,15 @@ class SampleReceptionController extends Controller
             $study = $request->input('study');
             $whereClauses[] = "r.study_id = '$study'";
         }
+        // add site filter
+        $user = $request->user();
+        $user_default_site = $user->default_site_id;
+        if ($user->role != 'admin') {
+            $whereClauses[] = "r.site_id = '$user_default_site'";
+        } else if ($request->has('site_id')) {
+            $site_id = $request->input('site_id');
+            $whereClauses[] = "r.site_id = '$site_id'";
+        }
 
         $sql = "SELECT s.code as study, af.form_name as basefol, count(*) as samples_collected,
                     sum(case when r.rejected = true then 1 else 0 end) as samples_rejected,
@@ -243,6 +260,8 @@ class SampleReceptionController extends Controller
                 left join studies s on s.id = r.study_id
                 left join study_acc_forms af on af.id = r.basefol 
               ";
+
+
 
         if (count($whereClauses) > 0) {
             $sql .= "where " . implode(" and ", $whereClauses) . " ";
