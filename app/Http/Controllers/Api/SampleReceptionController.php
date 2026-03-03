@@ -13,18 +13,11 @@ class SampleReceptionController extends Controller
 {
     public function index(Request $request)
     {
-
-        $user = User::find(auth('sanctum')->user());
-
-        $user_default_site = $user->get('default_site_id');
-        $selected_site = null;
-
-        if ($user->get('role') != 'admin') {
-            $selected_site = $user_default_site;
-        }
+        $user = $request->user();
+        $user_default_site = $user->default_site_id;
+        $selected_site = $user_default_site;
 
         $query = SampleReceipt::with(['study', 'specimenType', 'specimenDetails', 'entryBy', 'updatedBy', 'accForm']);
-
         // Filter by rejection status
         if ($request->has('rejected')) {
             //    ignore if value is not boolean
@@ -37,7 +30,17 @@ class SampleReceptionController extends Controller
                 }
             }
         }
-
+        $isAdmin = null;
+        // filter site
+        if ($user->get('role') != 'admin') {
+            $isAdmin = false;
+            $selected_site = $user_default_site;
+            $query->where('site_id', $selected_site);
+        } else if ($request->has('site_id')) {
+            $isAdmin = true;
+            $selected_site = $request->input('site_id');
+            $query->where('site_id', $selected_site);
+        }
         //filter by period
         if ($request->has('period')) {
             $period = $request->input('period');
@@ -54,13 +57,14 @@ class SampleReceptionController extends Controller
             $end = $request->input('end');
             $query->whereBetween('created_at', [$start, $end]);
         }
-
         $sampleReceipts = $query->orderBy('id', 'asc')->get();
-
         return response()->json([
             'success' => true,
             'data' => $sampleReceipts,
             'requesting_user' => $user,
+            "selected_site" => $selected_site,
+            "default_site" => $user_default_site,
+
         ]);
     }
 
@@ -123,6 +127,7 @@ class SampleReceptionController extends Controller
 
     public function store(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'study_id' => 'required|exists:studies,id',
             'basefol' => 'nullable|string|max:50',
@@ -144,6 +149,11 @@ class SampleReceptionController extends Controller
             ], 201);
         }
 
+
+
+        $user = $request->user();
+        $user_default_site = $user->default_site_id;
+
         $sample_receipt = SampleReceipt::create([
             'study_id' => $request->study_id,
             'basefol' => $request->basefol,
@@ -154,6 +164,7 @@ class SampleReceptionController extends Controller
             'dateinlab' => $request->dateinlab,
             'rejected' => $request->rejected ?? false,
             'resrej' => $request->resrej ?? null,
+            'site_id' => $user_default_site ?? null,
             // 'entry_by' => $request->entry_by,
         ]);
 
