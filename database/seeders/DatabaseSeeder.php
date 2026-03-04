@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
+        $this->call(SitesSeeder::class);
         $this->call([
             AdminUserSeeder::class,
             // Add other seeders here as needed
@@ -22,7 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SpecimenTypesTableSeeder::class);
         $this->call(StudiesTableSeeder::class);
         $this->call(WorksheetTypeSeeder::class);
-        $this->call(StudyParticipantsTableSeeder::class);
-        $this->call(SpecimensTableSeeder::class);
+        // $this->call(StudyParticipantsTableSeeder::class);
+        // $this->call(SpecimensTableSeeder::class);
     }
 }

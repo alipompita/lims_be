@@ -22,6 +22,7 @@ class AdminUserSeeder extends Seeder
             'email' => 'alipo.mpita@meiru.mw',
             'password' => Hash::make('12345678'),
             'role' => 'admin',
+            'default_site_id' => 1,
             'is_active' => true,
             'email_verified_at' => now(),
         ]);
