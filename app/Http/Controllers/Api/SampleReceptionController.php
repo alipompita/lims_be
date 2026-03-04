@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\SampleReceipt;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class SampleReceptionController extends Controller
 {
@@ -133,13 +134,26 @@ class SampleReceptionController extends Controller
             'study_id' => 'required|exists:studies,id',
             'basefol' => 'nullable|string|max:50',
             'stid' => 'required|string|max:7|min:7',
-            'spectype' => 'required|exists:specimen_types,id',
+            // unique spectype for stid-followup unless the value for rejected it different: need to ensure that for a given stid, the same spectype cannot be entered more than once for the same basefol (accform) - this is to prevent duplicate entries of the same sample type for the same participant and form. This can be implemented by adding a custom validation rule that checks the database for existing records with the same stid, spectype, and basefol combination before allowing the new record to be created.
+            'spectype' => [
+                'required',
+                'exists:specimen_types,id',
+                Rule::unique('sample_receipts')
+                    ->where(function ($query) use ($request) {
+                        return $query
+                            ->where('stid', $request->stid)
+                            ->where('basefol', $request->basefol)
+                            ->where('rejected', 0);
+                    }),
+            ],
             'specno' => 'required|string|max:7|min:7|unique:sample_receipts,specno',
             'datecol' => 'required|date|before_or_equal:today',
             'dateinlab' => 'required|date|after_or_equal:datecol|before_or_equal:today',
             'rejected' => 'boolean',
             'resrej' => 'required_if:rejected,1|string|max:255',
             // 'entry_by' => 'nullable|exists:users,id',
+
+
         ]);
 
         if ($validator->fails()) {
