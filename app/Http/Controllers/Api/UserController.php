@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::select('id', 'first_name', 'last_name', 'username', 'email', 'role', 'is_active', 'created_at')->orderBy('created_at', 'desc')->get();
+        $users = User::all();
 
         return response()->json([
             'success' => true,
