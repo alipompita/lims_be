@@ -198,11 +198,11 @@ class SampleReceptionController extends Controller
 
         if ($request->has('start_date')) {
             $start = $request->input('start_date');
-            $whereClauses[] = "r.created_at >= '$start'";
+            $whereClauses[] = "r.dateinlab >= '$start'";
         }
         if ($request->has('end_date')) {
             $end = $request->input('end_date');
-            $whereClauses[] = "r.created_at <= '$end'";
+            $whereClauses[] = "r.dateinlab <= '$end'";
         }
         if ($request->has('study')) {
             $study = $request->input('study');
@@ -249,11 +249,11 @@ class SampleReceptionController extends Controller
         $whereClauses = [];
         if ($request->has('start_date')) {
             $start = $request->input('start_date');
-            $whereClauses[] = "r.created_at >= '$start'";
+            $whereClauses[] = "r.dateinlab >= '$start'";
         }
         if ($request->has('end_date')) {
             $end = $request->input('end_date');
-            $whereClauses[] = "r.created_at <= '$end'";
+            $whereClauses[] = "r.dateinlab <= '$end'";
         }
         if ($request->has('study')) {
             $study = $request->input('study');
