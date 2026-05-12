@@ -292,4 +292,91 @@ class SampleReceptionController extends Controller
             'data' => $report,
         ]);
     }
+
+    public function reception_by_basefol_n_spectype(Request $request)
+    {
+        $whereClauses = [];
+
+        if ($request->filled('start_date')) {
+            $start = $request->input('start_date');
+            $whereClauses[] = "receipt.dateinlab >= '$start'";
+        }
+
+        if ($request->filled('end_date')) {
+            $end = $request->input('end_date');
+            $whereClauses[] = "receipt.dateinlab <= '$end'";
+        }
+
+        if ($request->filled('study')) {
+            $study = $request->input('study');
+            $whereClauses[] = "receipt.study_id = '$study'";
+        }
+
+        if ($request->filled('rejected')) {
+            $rejected = $request->boolean('rejected');
+            $whereClauses[] = "receipt.rejected = " . ($rejected ? '1' : '0');
+        }
+
+        // Site filter
+        $user = $request->user();
+        $user_default_site = $user->default_site_id;
+
+        if ($user->role != 'admin') {
+            $whereClauses[] = "receipt.site_id = '$user_default_site'";
+        } elseif ($request->filled('site_id')) {
+            $site_id = $request->input('site_id');
+            $whereClauses[] = "receipt.site_id = '$site_id'";
+        }
+
+        // Build WHERE clause
+        $whereSql = '';
+        if (count($whereClauses) > 0) {
+            $whereSql = 'WHERE ' . implode(' AND ', $whereClauses);
+        }
+
+        // Increase concat size
+        DB::statement("SET SESSION group_concat_max_len = 1000000");
+
+        // Generate dynamic columns
+        $columnSql = "
+        SELECT GROUP_CONCAT(
+            DISTINCT CONCAT(
+                'COUNT(CASE WHEN spectype.label = ''',
+                spectype.label,
+                ''' THEN receipt.specno END) AS `',
+                REPLACE(spectype.label, '`', ''),
+                '`'
+            )
+            ORDER BY spectype.label
+            SEPARATOR ', '
+        ) AS columns_sql
+        FROM specimen_types spectype
+    ";
+
+        $columnsResult = DB::select($columnSql);
+
+        $dynamicColumns = $columnsResult[0]->columns_sql ?? '';
+
+        // Final dynamic query
+        $sql = "
+        SELECT
+            basefol.code AS basefol_code,
+            $dynamicColumns
+        FROM sample_receipts receipt
+        LEFT JOIN study_acc_forms basefol
+            ON basefol.id = receipt.basefol
+        LEFT JOIN specimen_types spectype
+            ON spectype.code = receipt.spectype
+        $whereSql
+        GROUP BY basefol.code
+        ORDER BY basefol.code
+    ";
+
+        $report = DB::select($sql);
+
+        return response()->json([
+            'success' => true,
+            'data' => $report,
+        ]);
+    }
 }
