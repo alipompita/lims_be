@@ -67,6 +67,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sites/{id}', [\App\Http\Controllers\Api\SiteController::class, 'show']);
     Route::get('/study-acc-forms-all', [\App\Http\Controllers\Api\StudyAccFormContoller::class, 'index']);
 
+    Route::post('/new-shipment', [App\Http\Controllers\Api\ShipmentsController::class, 'store']);
+    Route::get('/outgoing-shipments', [App\Http\Controllers\Api\ShipmentsController::class, 'getOutgoingShipments']);
+    Route::get('/incoming-shipments', [App\Http\Controllers\Api\ShipmentsController::class, 'getIncomingShipments']);
+
     // Route::get('/test-types', [TestTypeController::class, 'index']);
 
     // Admin only routes

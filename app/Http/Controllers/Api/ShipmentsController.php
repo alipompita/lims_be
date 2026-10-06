@@ -22,6 +22,28 @@ class ShipmentsController extends Controller
         ], 200);
     }
 
+    public function getOutgoingShipments()
+    {
+        $user_site_id = auth('sanctum')->user()->default_site_id;
+        $shipments = Shipment::where('from_site_id', $user_site_id)->get();
+        return response()->json([
+            "success" => true,
+            "data" => $shipments,
+            "site_id" => $user_site_id
+        ], 200);
+    }
+
+    public function getIncomingShipments()
+    {
+        $user_site_id = auth('sanctum')->user()->default_site_id;
+        $shipments = Shipment::where('to_site_id', $user_site_id)->where('posted', true)->get();
+        return response()->json([
+            "success" => true,
+            "data" => $shipments,
+            "site_id" => $user_site_id
+        ], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
