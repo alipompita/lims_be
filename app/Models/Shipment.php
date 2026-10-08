@@ -42,6 +42,11 @@ class Shipment extends Model
         return $this->belongsTo(User::class, 'received_by');
     }
 
+    public function created_by()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     public function is_posted()
     {
         return $this->posted;
@@ -49,7 +54,7 @@ class Shipment extends Model
 
     public function is_received()
     {
-        return $this->received;
+        return $this->date_received !== null;
     }
 
     public static function boot()

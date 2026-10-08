@@ -9,6 +9,8 @@ class ShipmentSpecimen extends Model
 {
     use HasFactory;
 
+    protected $table = 'shipment_specimen';
+
     protected $fillable = [
         'shipment_id',
         'labno',
@@ -38,5 +40,10 @@ class ShipmentSpecimen extends Model
     public function shipment()
     {
         return $this->belongsTo(Shipment::class, 'shipment_id');
+    }
+
+    public function specimen()
+    {
+        return $this->belongsTo(Specimen::class, 'labno', 'labno');
     }
 }

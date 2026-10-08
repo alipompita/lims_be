@@ -70,6 +70,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/new-shipment', [App\Http\Controllers\Api\ShipmentsController::class, 'store']);
     Route::get('/outgoing-shipments', [App\Http\Controllers\Api\ShipmentsController::class, 'getOutgoingShipments']);
     Route::get('/incoming-shipments', [App\Http\Controllers\Api\ShipmentsController::class, 'getIncomingShipments']);
+    Route::get('/view-shipments/{shipment}', [App\Http\Controllers\Api\ShipmentsController::class, 'show']);
+
+    Route::post('/new-shipment-specimen', [App\Http\Controllers\Api\ShipmentSpecimenController::class, 'store']);
+
+    Route::get('/shipment-specimen/{shipment}', [App\Http\Controllers\Api\ShipmentSpecimenController::class, 'getShipmentSpecimens']);
+    Route::get('/shipment-specimen/{shipment}/{box_number}', [App\Http\Controllers\Api\ShipmentSpecimenController::class, 'getShipmentSpecimensByBox']);
+    Route::post('/post-shipment/{shipment}', [App\Http\Controllers\Api\ShipmentsController::class, 'postShipment']);
 
     // Route::get('/test-types', [TestTypeController::class, 'index']);
 

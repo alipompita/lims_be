@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('shipment_specimen', function (Blueprint $table) {
-            $table->enum('shipment_purpose', ['Test', 'Storage'])->after('labno');
+            $table->enum('shipment_purpose', ['Test', 'Storage'])->nullable()->after('labno');
             $table->boolean('received')->nullable()->after('unit');
             $table->enum('condition_received', ['Good', 'Damaged', 'Leaked', 'Broken Cold Chain', 'Missing', 'Other'])->nullable()->after('received');
             $table->string('condition_other')->nullable()->after('condition_received');

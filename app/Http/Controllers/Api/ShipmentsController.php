@@ -44,6 +44,53 @@ class ShipmentsController extends Controller
         ], 200);
     }
 
+    public function postShipment(int $shipmentId)
+    {
+        try {
+            $shipment = Shipment::where('id', $shipmentId)->with('specimen')->first();
+
+            if (!$shipment) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Shipment not found.',
+                ], 404);
+            }
+
+            // check if shipment contains specimens
+            if ($shipment->specimen->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Shipment cannot be posted because it does not contain any specimens.',
+                ], 400);
+            }
+
+            if ($shipment->posted) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Shipment has already been posted.',
+                ], 400);
+            }
+
+
+            $shipment->posted = true;
+            $shipment->shipped_by = auth('sanctum')->id();
+            $shipment->date_shipped = now();
+            $shipment->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Shipment posted successfully.',
+                'data' => $shipment,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while posting the shipment.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -105,7 +152,25 @@ class ShipmentsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $shipment = Shipment::with('created_by', 'received_by', 'shipped_by')->find($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => "Error occurred while fetching shipment!",
+                'error' => $e->getMessage()
+            ], 500);
+        }
+        if (!$shipment) {
+            return response()->json([
+                'success' => false,
+                'message' => "Shipment not found!",
+            ], 404);
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $shipment,
+        ], 200);
     }
 
     /**

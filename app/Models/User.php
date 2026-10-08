@@ -68,6 +68,7 @@ class User extends Authenticatable
         return $this->belongsTo(Site::class, 'default_site_id');
     }
 
+
     public function isLabTech(): bool
     {
         return $this->role === 'lab_tech';
