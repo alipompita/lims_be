@@ -218,8 +218,13 @@ class SpecimenController extends Controller
         // check if study participant exists
         $participant = \App\Models\StudyParticipant::where('stid', $request->STID)->first();
 
+
+
         if (!$participant) {
             $accForm = \App\Models\StudyAccForm::where('code', $request->ACCFORM)->first();
+            $user = $request->user();
+            $user_default_site = $user->default_site_id;
+
             if (!$accForm) {
                 return response()->json([
                     'success' => false,
@@ -234,6 +239,7 @@ class SpecimenController extends Controller
                     'initials' => $request->PARTICIPANTINITIALS ?? null,
                     'sex' => $request->SEX ?? null,
                     'dob' => $request->DOB_YEAR . '-' . $request->DOB_MONTH . '-' . $request->DOB_DAY ?? null,
+                    'site_id' => $user_default_site
                 ]);
             } catch (Exception $e) {
                 return response()->json([

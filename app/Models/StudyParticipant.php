@@ -25,7 +25,7 @@ class StudyParticipant extends Model
         'initials',
         'sex',
         'dob',
-
+        'site_id'
     ];
 
     protected $casts = [
